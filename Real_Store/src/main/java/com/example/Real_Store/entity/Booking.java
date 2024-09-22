@@ -1,5 +1,7 @@
 package com.example.Real_Store.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,14 +28,17 @@ public class Booking {
     private String orderStatus;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "customer_Id",referencedColumnName = "customerId")
     public Customer customer;
 
     @OneToOne(mappedBy = "booking",cascade = CascadeType.ALL)
+    @JsonManagedReference
     public Payment payment;
 
 
     @ManyToMany
+    @JsonBackReference
     @JoinTable(name="productBookingTable",
             joinColumns = @JoinColumn(name = "orderId"),
             inverseJoinColumns = @JoinColumn(name = "productId"))

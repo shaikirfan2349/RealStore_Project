@@ -2,6 +2,7 @@ package com.example.Real_Store.entity;
 
 import com.example.Real_Store.enumeration.StockStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,11 +34,13 @@ public class Product {
     @JsonBackReference
     public Category category;
 
-    @ManyToMany(mappedBy = "productList",cascade = CascadeType.ALL)
 
+    @ManyToMany(mappedBy = "productList",cascade = CascadeType.ALL)
+    @JsonBackReference
     public List<Customer> customerList;
 
     @ManyToMany(mappedBy = "productList",cascade = CascadeType.ALL)
+    @JsonManagedReference
     public List<Booking> bookingList ;
 
     public Product(Long productId, String name, double price, int stockQuantity, String description, String productStatus, StockStatus stockStatus, Category category, List<Customer> customerList, List<Booking> bookingList) {

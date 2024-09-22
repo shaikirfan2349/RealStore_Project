@@ -1,5 +1,6 @@
 package com.example.Real_Store.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +24,7 @@ public class Payment {
 
     @OneToOne
     @JoinColumn(name = "order_Id", referencedColumnName = "orderId")
+    @JsonBackReference
     public Booking booking;
 
     public Payment(Long referenceId, double paymentAmount, Date paymentDate, String paymentMethod, String paymentStatus) {

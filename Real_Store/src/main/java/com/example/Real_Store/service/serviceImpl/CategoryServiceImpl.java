@@ -3,20 +3,20 @@ package com.example.Real_Store.service.serviceImpl;
 import com.example.Real_Store.conversion.ConversionClass;
 import com.example.Real_Store.dto.CategoryDTO;
 import com.example.Real_Store.entity.Category;
-import com.example.Real_Store.entity.Product;
 import com.example.Real_Store.repository.CategoryRepository;
 import com.example.Real_Store.repository.ProductRepository;
 import com.example.Real_Store.service.CategoryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
+    private static final Logger logger = LoggerFactory.getLogger(CategoryServiceImpl.class);
+
     @Autowired
     public CategoryRepository categoryRepository;
     @Autowired
@@ -25,27 +25,30 @@ public class CategoryServiceImpl implements CategoryService {
     public ProductRepository productRepository;
 
     @Override
-    public CategoryDTO addCategory(CategoryDTO categoryDTO) throws Exception {
-        if(categoryDTO!=null){
+    public CategoryDTO addCategory(CategoryDTO categoryDTO){
+        if(categoryDTO.getName()!=null){
             Category category = conversionClass.CategoryDTO_To_CategoryEntity(categoryDTO);
             categoryRepository.save(category);
+            logger.error("REAL_STORE: ADD CATEGORY- category added for Name {}",categoryDTO.getName());
             return conversionClass.CategoryEntity_To_CategoryDTO(category);
         }else{
-            throw new Exception("categoryDTO should not null");
+            logger.error("REAL_STORE: ADD CATEGORY- categoryDTO should not be null {}",categoryDTO);
         }
+        return null;
     }
 
     @Override
-    public CategoryDTO getCategoryById(Long categoryId) throws Exception {
+    public CategoryDTO getCategoryById(Long categoryId) {
 
         try{
             if(categoryId!=null){
                 Category category = categoryRepository.findById(categoryId).get();
                 CategoryDTO categoryDTO = conversionClass.CategoryEntity_To_CategoryDTO(category);
+                logger.error("REAL_STORE: GET CATEGORY BY ID- category retrieved by Id {}",categoryId);
                 return categoryDTO;
             }
         }catch (Exception e){
-            throw new Exception("categoryId not found");
+            logger.error("REAL_STORE: GET CATEGORY BY ID- categoryId not found {}",categoryId);
         }
         return null;
     }
@@ -57,29 +60,33 @@ public class CategoryServiceImpl implements CategoryService {
         category.setName(categoryDTO.getName());
         category.setDescription(categoryDTO.getDescription());
         CategoryDTO categoryDTO1 = conversionClass.CategoryEntity_To_CategoryDTO(category);
+        logger.info("REAL_STORE: UPDATE CATEGORY- category updated for Id {}", categoryId);
         return categoryDTO1;
     }
 
     @Override
     public String deleteCategoryById(Long categoryId) {
         try{
-            categoryRepository.deleteById(categoryId);
-            return "category deleted";
-        }catch (NoSuchElementException e){
+            if(categoryId != null){
+                categoryRepository.deleteById(categoryId);
+                logger.error("REAL_STORE: DELETE CATEGORY BY ID- category deleted for Id {}",categoryId);
+                return "category deleted";
+            }
+        }catch (Exception e){
+            logger.error("REAL_STORE: DELETE CATEGORY BY ID- categoryId not found {}",categoryId);
             return  "category not found";
         }
+        return null;
     }
 
     @Override
-    public List<CategoryDTO> getAllCategory() throws Exception {
+    public List<CategoryDTO> getAllCategory()  {
         try{
             List<Category> categoryDTOList = categoryRepository.findAll().stream().collect(Collectors.toList());
             return categoryDTOList.stream().map(category -> conversionClass.CategoryEntity_To_CategoryDTO(category)).toList();
         } catch (Exception e){
-            throw new Exception("Category List is Empty");
+            logger.info("REAL_STORE: GET ALL CATEGORY- Category List is Empty");
         }
-
+        return null;
     }
-
-
 }

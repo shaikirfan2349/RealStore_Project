@@ -21,11 +21,12 @@ public class Customer {
     private String address;
     private String email;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "customer",cascade = CascadeType.ALL)
     public List<Booking> orderList;
 
     @ManyToMany(cascade = CascadeType.ALL)
-
+    @JsonManagedReference
     @JoinTable(name = "product-Customer",
             joinColumns = @JoinColumn(name = "customerId"),
             inverseJoinColumns = @JoinColumn(name = "productId") )

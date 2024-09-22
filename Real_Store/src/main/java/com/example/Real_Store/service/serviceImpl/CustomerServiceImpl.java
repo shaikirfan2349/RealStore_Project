@@ -7,6 +7,8 @@ import com.example.Real_Store.entity.Customer;
 import com.example.Real_Store.repository.CustomerRepository;
 import com.example.Real_Store.repository.OrderRepository;
 import com.example.Real_Store.service.CustomerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,8 @@ import java.util.Objects;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
+    public static final Logger logger = LoggerFactory.getLogger(CustomerServiceImpl.class);
+
     @Autowired
     public ConversionClass conversionClass;
     @Autowired
@@ -23,24 +27,32 @@ public class CustomerServiceImpl implements CustomerService {
     public OrderRepository orderRepository;
 
     @Override
-    public CustomerDTO addCustomer(CustomerDTO customerDTO) throws Exception {
+    public CustomerDTO addCustomer(CustomerDTO customerDTO){
         if(Objects.nonNull(customerDTO)){
             Customer customer = conversionClass.CustomerDTO_To_CustomerEntity(customerDTO);
             customerRepository.save(customer);
+            logger.info("REAL_STORE: CUSTOMER ADDED {}", customerDTO);
             return conversionClass.CustomerEntity_To_CustomerDTO(customer);
         }else{
-            throw new Exception("customerDTO should not be Null");
+            logger.info("REAL_STORE: ADD CUSTOMER- customerDTO should not be Null {}", customerDTO);
         }
+        return null;
     }
 
     @Override
     public CustomerDTO getCustomerById(Long customerId) {
-        Customer customer = customerRepository.findById (customerId).get();
-        return conversionClass.CustomerEntity_To_CustomerDTO(customer);
+        if(customerId != null) {
+            Customer customer = customerRepository.findById(customerId).get();
+            logger.info("REAL_STORE: GET CUSTOMER BY ID {}", customerId);
+            return conversionClass.CustomerEntity_To_CustomerDTO(customer);
+        }else {
+            logger.info("REAL_STORE: GET CUSTOMER BY ID- customerId should not be Null {}", customerId);
+        }
     }
 
     @Override
     public List<CustomerDTO> getAllCustomers() {
+        logger.info("REAL_STORE: GET ALL CUSTOMERS ");
         return customerRepository.
                 findAll().stream().
                 map(customer -> convertCustomerToCustomerDTO(customer)).toList();

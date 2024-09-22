@@ -6,13 +6,13 @@ import com.example.Real_Store.entity.Category;
 import java.util.List;
 
 public interface CategoryService {
-    CategoryDTO addCategory(CategoryDTO categoryDTO) throws Exception;
+    CategoryDTO addCategory(CategoryDTO categoryDTO);
 
-    CategoryDTO getCategoryById(Long categoryId) throws Exception;
+    CategoryDTO getCategoryById(Long categoryId);
 
     CategoryDTO updateCategory(CategoryDTO categoryDTO);
 
     String deleteCategoryById(Long categoryId);
 
-    List<CategoryDTO> getAllCategory() throws Exception;
+    List<CategoryDTO> getAllCategory();
 }
